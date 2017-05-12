@@ -8,17 +8,31 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     marginBottom: 10,
+    textAlign: 'center'
   },
-  ruleText: {
-    marginBottom: 10
+  ruleContainer: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'lightgray',
+    paddingHorizontal: 5,
+    marginBottom: 5,
+  },
+  ruleHeaderText: {
+    marginBottom: 5,
+    fontSize: 18,
+  },
+  ruleBodyText: {
+    fontSize: 14,
+    marginLeft: 10
   },
   exampleViewContainer: {
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 5,
     borderColor: 'lightgray',
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
+    marginBottom: 5,
   },
-  exampleTextHeaderText: {
+  exampleHeaderText: {
     fontSize: 18
   },
   exampleBodyText: {
@@ -31,6 +45,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 13,
     fontWeight: '500',
+    color: 'gray'
+  },
+  eachHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  firstInstruction: {
     color: 'gray'
   }
 });
