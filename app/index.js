@@ -56,13 +56,7 @@ export default class App extends React.Component {
   };
   fnSubmit() {
     this.state.strInputText === '' ? alert('input text please') : this.fnCalculate();
-
   };
-  // onChangeFn(event) {
-  //   this.setState({
-  //     strInputText: event.target.value
-  //   });
-  // };
   fnCalculate() {
     this.setState(prevState => {
       prevState.arrCalculatedText = [];
@@ -303,18 +297,6 @@ export default class App extends React.Component {
                     (click to hide)
                   </Text>
                 </View>
-                {/* <ScrollView
-                  style={{
-                    maxHeight: 100,
-                  }}
-                >
-                  {Object.keys(this.state.objVariableSet).map(value => (<Text
-                        key={value}
-                      >
-                        {value}: {this.state.objVariableSet[value]}
-                      </Text>)
-                  )}
-                </ScrollView> */}
               </View>
             ) : (
               <View
@@ -367,8 +349,6 @@ export default class App extends React.Component {
             autoCapitalize={'none'}
             placeholder='input what you want to calculate'
             onChangeText={strInputText => this.setState({ strInputText })}
-            // value={this.state.strInputText}
-            // autoFocus={true}
           />
         </KeyboardAvoidingView>
         <Button
