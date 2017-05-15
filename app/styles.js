@@ -53,6 +53,17 @@ const styles = StyleSheet.create({
   },
   firstInstruction: {
     color: 'gray'
+  },
+  fabBtnStyle: {
+    // backgroundColor: '#86939D'
+    // backgroundColor: 'red'
+    backgroundColor: 'red'
+  },
+  fabTwoDepthBtnStyle: {
+    color: 'blue'
+  },
+  variableListText: {
+    fontSize: 18
   }
 });
 

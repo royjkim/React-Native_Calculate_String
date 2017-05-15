@@ -8,20 +8,32 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableOpacity,
-  ScrollView,
+  ListView
 } from 'react-native';
 import {
+  Container,
+  Header,
+  Body,
+  Left,
+  Right,
+  Title,
+  Footer,
   Button,
+  Content,
+  // Text,
+  Icon,
+  Drawer,
   Fab,
-  // Icon
 } from 'native-base';
-import Icon from 'react-native-vector-icons/FontAwesome';
+// import Icon from 'react-native-vector-icons/FontAwesome';
 // import { Icon } from 'native-base/Fonts';
 import styles from './styles';
+import MySideBar from './components/MySideBar';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       strNewInputedText: '',
       strInputText: '',
@@ -30,10 +42,13 @@ export default class App extends React.Component {
       numTotalResult: 0,
       numTempPrevResult: 0,
       objVariableSet: {},
+      arrObjVariableSet: [],
+      arrDataSourceVariableSet: this.ds.cloneWithRows([]),
       boolCalculateStatus: false,
       ruleVisible: true,
       exampleVisible: false,
-      variableListVisible: true
+      variableListVisible: true,
+      boolFabActive: false,
     };
     this.fnArithmeticOperationMapper = {
       '+': (...args) => args.reduce(function(val1, val2) { return val1 + val2 }),
@@ -51,17 +66,27 @@ export default class App extends React.Component {
     };
     this.fnSubmit = this.fnSubmit.bind(this);
     this.fnCalculate = this.fnCalculate.bind(this);
+    this.fnClear = this.fnClear.bind(this);
+    this.fnCloseDrawer = this.fnCloseDrawer.bind(this);
+    this.fnOpenDrawer = this.fnOpenDrawer.bind(this);
+    this.fnToggleFab = this.fnToggleFab.bind(this);
     this.extractNumsReg = /([0-9]+)/gm;
     this.splitReg = /([\s])/gm;
     this.matchReg = /([a-zA-Z0-9]+)|([0-9]+)|([*+\-/=])/gm;
     this.boolFirstInstruction = true;
     console.disableYellowBox = true;
+
   };
 
   fnFocus() {
-    this.refs['_textarea'].focus();
+    // this.refs['_textarea'].focus();
+    this._textarea.focus();
+  };
+  fnToggleFab() {
+    this.setState({ boolFabActive: false });
   };
   fnSubmit() {
+    this.fnToggleFab();
     this.state.strInputText === '' ? alert('input text please') : this.fnCalculate();
   };
   fnCalculate() {
@@ -87,8 +112,13 @@ export default class App extends React.Component {
         value === '=' && !/([*+-/])/.test(prevState.arrSplittedText[index - 2]) && nextValueFromArrSplittedText && (
           prevState.objVariableSet.hasOwnProperty(prevValueFromArrSplittedText) || (prevState.objVariableSet[prevValueFromArrSplittedText] = 0),
           prevState.objVariableSet[prevValueFromArrSplittedText] = isNaN(nextValueFromArrSplittedText) ? prevState.objVariableSet.hasOwnProperty(nextValueFromArrSplittedText) ? prevState.objVariableSet[nextValueFromArrSplittedText] : 0 : parseFloat(nextValueFromArrSplittedText.match(this.extractNumsReg) || 0),
+          prevState.arrObjVariableSet.push({
+            name: prevValueFromArrSplittedText,
+            value: prevState.objVariableSet[prevValueFromArrSplittedText]
+          }),
           prevState.numTempPrevResult = 0,
           prevState.arrCalculatedText.push(prevValueFromArrSplittedText, ' = ', prevState.objVariableSet[prevValueFromArrSplittedText], '\n')
+          // prevState.arrDataSourceVariableSet = this.ds.cloneWithRows(prevState.arrObjVariableSet)
         );
 
         // Below is for caculation.
@@ -126,17 +156,18 @@ export default class App extends React.Component {
       prevState.strInputText = '';
       prevState.arrCalculatedText.map(value => prevState.strInputText += value);
     });
-    setTimeout(() => this.refs['_textarea'].setNativeProps({ text: this.state.strInputText }), 0);
+    setTimeout(() => this._textarea.setNativeProps({ text: this.state.strInputText }), 0);
     Keyboard.dismiss();
   };
   fnClear() {
+    this.fnToggleFab();
     Alert.alert(
       'Warning',
       'All data would be deleted. This can\'t be restored.',
       [
         { text: 'Cancel', onPress: () => this.fnFocus() },
         { text: 'OK', onPress: () => {
-          this.refs['_textarea'].setNativeProps({ text: '' });
+          this._textarea.setNativeProps({ text: '' });
           this.setState({
             strNewInputedText: '',
             strInputText: '',
@@ -155,287 +186,169 @@ export default class App extends React.Component {
   componentDidMount() {
     const fnInitializedFinished = () => {
       this.boolFirstInstruction = false;
-      this.refs['_textarea'].focus();
+      this._textarea && this._textarea.focus();
     };
     setTimeout(() => this.setState({ ruleVisible: false }, fnInitializedFinished()), 5000);
-  }
+  };
+
+  fnCloseDrawer() {
+    this._drawer._root.close();
+  };
+  fnOpenDrawer() {
+    Keyboard.dismiss();
+    this._drawer._root.open();
+  };
+
   render() {
+    // const fnCloseDrawer = () => {
+    //   this._drawer._root.close();
+    // };
+    // const fnOpenDrawer = () => {
+    //   this._drawer._root.open();
+    // };
     return(
-      <View
-        style={styles.container}
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center'
-            }}
-          >
-            <Text
-              style={styles.headerText}
+            <Drawer
+              ref={_drawer => this._drawer = _drawer}
+              // content={<MySideBar navigator={this.navigator} />}
+              // content={<MySideBar objVariableSet={this.state.objVariableSet} arrDataSourceVariableSet={this.state.arrDataSourceVariableSet} />}
+              content={<MySideBar objVariableSet={this.state.objVariableSet} arrDataSourceVariableSet={this.state.arrObjVariableSet} />}
+              // onClose={() => this.fnCloseDrawer()}
+              // onClose={() => alert('close')}
+              // onOpen={() => alert('open')}
+              onClose={this.fnCloseDrawer}
             >
-              String Calculate
-            </Text>
-          </View>
-          <View
-            style={{
-              flex: 0,
-              justifyContent: 'flex-end'
-            }}
-          >
-            <Text
-              style={styles.copyRightText}
-            >
-              by Roy
-            </Text>
-          </View>
-
-        </View>
-
-        <View
-          style={styles.ruleContainer}
-        >
-          <TouchableOpacity
-            onPress={() => this.setState({ ruleVisible: !this.state.ruleVisible })}
-          >
-            {this.state.ruleVisible ? (
-              <View>
-                <View
-                  style={styles.eachHeaderContainer}
-                >
-                  <Text
-                    style={styles.ruleHeaderText}
-                  >
-                    Rules
-                  </Text>
-                  <Text
-                    style={[styles.ruleBodyText, { color: 'gray' }]}
-                  >
-                    (click to hide)
-                  </Text>
-                </View>
-                <Text
-                  style={styles.ruleBodyText}
-                >
-                  1. allow arithmetic operations : +, -, *, /
-                  {'\n'}
-                  2. calculate order : from left(not allowed : bracket)
-                  {/* 2. calculate order : from left(not allowed : bracket, order of operations) */}
-                  {'\n'}
-                  3. space not allowed in the variable name.
-                  {'\n'}
-                  4. each expression should be end with ','.
-                  {'\n'}
-                  5. support language is english only.
-                </Text>
-              </View>
-              ) : (
-                <View
-                  style={styles.eachHeaderContainer}
-                >
-                  <Text
-                    style={styles.ruleHeaderText}
-                  >
-                    Rules
-                  </Text>
-                  <Text
-                    style={[styles.ruleBodyText, { color: 'gray' }]}
-                  >
-                    (click to show)
-                  </Text>
-                </View>
-              )}
-          </TouchableOpacity>
-          </View>
-        <View
-          style={styles.exampleViewContainer}
-        >
-          <TouchableOpacity
-            onPress={() => this.setState({ exampleVisible: !this.state.exampleVisible })}
-          >
-            {this.state.exampleVisible ? (
-              <View>
-                <View
-                  style={styles.eachHeaderContainer}
-                >
+              <Container>
+                <Header>
+                  <Left>
+                    <Button light
+                      onPress={this.fnOpenDrawer}
+                    >
+                      <Icon name='menu' style={{ color: 'black' }} />
+                    </Button>
+                  </Left>
+                  <Body>
+                    <Title>
+                      Calculator
+                    </Title>
+                  </Body>
+                  <Right />
+                </Header>
+                <Content>
+                  {/* <Body> */}
                   <Text
                     style={styles.exampleHeaderText}
                   >
                     Examples
                   </Text>
                   <Text
-                    style={[styles.ruleBodyText, { color: 'gray' }]}
+                    style={styles.exampleBodyText}
                   >
-                    (click to hide)
+                    coke=100,
+                    {'\n'}
+                    sprite=200,
+                    {'\n'}
+                    coke + sprite = (press 'run Calculate')
                   </Text>
-                </View>
-                <Text
-                  style={styles.exampleBodyText}
-                >
-                  coke=100,
-                  {'\n'}
-                  sprite=200,
-                  {'\n'}
-                  coke + sprite = (press 'run Calculate')
-                </Text>
-              </View>
-            ) : (
-              <View>
-                <View
-                  style={styles.eachHeaderContainer}
-                >
+                  <Fab
+                    active={this.state.boolFabActive}
+                    onPress={() => this.setState({ boolFabActive: !this.state.boolFabActive })}
+                    style={{ backgroundColor: '#008D14' }}
+                    // containerStyle={{ marginTop: 0 }}
+                    direction='left'
+                    position='topRight'
+                  >
+                    {/* <Icon name='ios-radio-button-on' /> */}
+                    <Icon name='ios-arrow-dropleft-circle-outline' />
+                    <Button
+                      style={{ backgroundColor: '#045591' }}
+                      onPress={() => {
+                        this.fnToggleFab();
+                        this.fnOpenDrawer();
+                      }}
+                    >
+                      <Icon name='md-list' />
+                    </Button>
+                    <Button
+                      style={{ backgroundColor: '#FF2A1A' }}
+                      onPress={this.fnClear}
+                    >
+                      <Icon
+                        name='ios-close-outline'
+                        // style={{ color: }}
+                      />
+                    </Button>
+                    {/* <Button
+                      style={{ backgroundColor: '#385EFB' }}
+                      onPress={this.fnSubmit}
+                    >
+                      <Icon
+                        name='ios-happy-outline'
+                        style={styles.fabTwoDepthBtnStyle}
+                      />
+                    </Button> */}
+                    <Button
+                      style={{ backgroundColor: '#385EFB' }}
+                      onPress={this.fnSubmit}
+                    >
+                      <Icon
+                        name='md-checkmark'
+                        // style={styles.fabTwoDepthBtnStyle}
+                      />
+                    </Button>
+                  </Fab>
                   <Text
                     style={styles.exampleHeaderText}
                   >
-                    Examples
+                    Expression
                   </Text>
-                  <Text
-                    style={[styles.ruleBodyText, { color: 'gray' }]}
+                    <KeyboardAvoidingView
+                      behavior='padding'
+                    >
+                      <TextInput
+                        // ref='_textarea'
+                        ref={_textarea => {
+                          this._textarea = _textarea;
+                          // console.log('ref')
+                          // this.state.boolFabActive && this.fnToggleFab();
+                        }}
+                        style={{
+                          height: 150,
+                          borderWidth: 1,
+                          borderRadius: 5,
+                          borderColor: 'lightgray',
+                          padding: 10,
+                          fontSize: 13,
+                        }}
+                        multiline={true}
+                        autoCapitalize={'none'}
+                        placeholder='input what you want to calculate'
+                        onChangeText={strInputText => {
+                          this.state.boolFabActive && this.fnToggleFab();
+                          this.setState({ strInputText });
+                        }}
+                      />
+                    </KeyboardAvoidingView>
+                  {/* </Body> */}
+                </Content>
+                {/* <Footer>
+                  <View
+                    style={{ justifyContent: 'center' }}
                   >
-                    (click to show)
-                  </Text>
-                </View>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
-        <View
-          style={styles.exampleViewContainer}
-        >
-          <TouchableOpacity
-            onPress={() => this.setState({ variableListVisible: !this.state.variableListVisible })}
-          >
-            {this.state.variableListVisible ? (
-              <View>
-                <View
-                  style={styles.eachHeaderContainer}
-                  >
-                  <Text
-                    style={styles.exampleHeaderText}
-                  >
-                    Variables({Object.keys(this.state.objVariableSet).length})
-                  </Text>
-                  <Text
-                    style={[styles.ruleBodyText, { color: 'gray' }]}
-                  >
-                    (click to hide)
-                  </Text>
-                </View>
-              </View>
-            ) : (
-              <View
-                style={styles.eachHeaderContainer}
-                >
-                <Text
-                  style={styles.exampleHeaderText}
-                >
-                  Variable List
-                </Text>
-                <Text
-                  style={[styles.ruleBodyText, { color: 'gray' }]}
-                >
-                  (click to show)
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
-          {this.state.variableListVisible && (
-            <ScrollView
-              style={{
-                maxHeight: 80,
-                marginTop: Object.keys(this.state.objVariableSet).length > 0 ? 5 : 0,
-              }}
-            >
-              {Object.keys(this.state.objVariableSet).map(value => (<Text
-                    key={value}
-                  >
-                    {value}: {this.state.objVariableSet[value]}
-                  </Text>)
-              )}
-            </ScrollView>
-          )}
-        </View>
-        <KeyboardAvoidingView
-          behavior='padding'
-        >
-          <TextInput
-            ref='_textarea'
-            style={{
-              height: 150,
-              borderWidth: 1,
-              borderRadius: 5,
-              borderColor: 'lightgray',
-              padding: 10,
-              fontSize: 13,
-            }}
-            multiline={true}
-            autoCapitalize={'none'}
-            placeholder='input what you want to calculate'
-            onChangeText={strInputText => this.setState({ strInputText })}
-          />
-        </KeyboardAvoidingView>
-        <Button
-          onPress={this.fnSubmit}
-        >
-          <Icon name='refresh' />
-          <Text>
-            Run Calculate
-          </Text>
-        </Button>
-        {/* <Button
-          onPress={this.fnClear}
-        > */}
-          <Icon name='clear' />
-          {/* <Text>
-            Clear
-          </Text>
-        </Button> */}
-        {/* <Button>
-          <Icon name='keyboard-close' />
-          <Text>
-            Hide Keyboard
-          </Text>
-        </Button> */}
-        {/* <Button
-          title='Run Calculate'
-          onPress={this.fnSubmit}
-        /> */}
-        {/* <Button
-          title='Clear'
-          onPress={() => {
-            Alert.alert(
-              'Warning',
-              'All data would be deleted. This can\'t be restored.',
-              [
-                { text: 'Cancel', onPress: () => this.fnFocus() },
-                { text: 'OK', onPress: () => {
-                  this.refs['_textarea'].setNativeProps({ text: '' });
-                  this.setState({
-                    strNewInputedText: '',
-                    strInputText: '',
-                    arrSplittedText: [],
-                    arrCalculatedText: [],
-                    numTotalResult: 0,
-                    numTempPrevResult: 0,
-                    objVariableSet: {},
-                    boolCalculateStatus: false
-                  });
-                }}
-              ]
-            )
-          }}
-        /> */}
-        {this.boolFirstInstruction && <Text
-          style={styles.firstInstruction}
-          >
-          * Rules would be hide automatically in 5 seconds.
-        </Text>}
-      </View>
+                    <Button bordered danger
+                      // style={{ backgroundColor: 'white', color: 'red' }}
+                    >
+                      <Icon
+                        name='trash'
+                        style={{ color: '#FF2A1A' }}
+                      />
+                      <Text>
+                        Clear
+                      </Text>
+                    </Button>
+                  </View>
+                </Footer> */}
+              </Container>
+            </Drawer>
     )
   }
 }
