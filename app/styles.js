@@ -33,12 +33,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   exampleHeaderText: {
-    fontSize: 18
+    fontSize: 18,
   },
   exampleBodyText: {
-    marginTop: 5,
-    fontSize: 13,
-    borderTopWidth: 1
+    // marginTop: 5,
+    // fontSize: 13,
+    // borderTopWidth: 1,
+    // marginLeft: 7,
   },
   copyRightText: {
     marginTop: 10,
@@ -70,8 +71,19 @@ const styles = StyleSheet.create({
   },
   instructionViewContainer: {
     flex: 1,
-    // flexDirection: 'row',
     alignItems: 'center',
+  },
+  exampleHeaderView: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  copyWriterView: {
+    justifyContent: 'center'
+  },
+  copyWriterText: {
+    fontWeight: '500',
+    fontSize: 15,
+    color: '#797979'
   }
 });
 

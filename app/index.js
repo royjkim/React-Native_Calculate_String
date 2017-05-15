@@ -19,11 +19,14 @@ import {
   Footer,
   Button,
   Content,
-  // Text,
   Icon,
   Drawer,
   Fab,
   Toast,
+  Card,
+  CardItem,
+  List,
+  ListItem,
 } from 'native-base';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import { Icon } from 'native-base/Fonts';
@@ -47,6 +50,7 @@ export default class App extends React.Component {
       exampleVisible: false,
       variableListVisible: true,
       boolFabActive: false,
+      boolExampleVisible: true
     };
     this.fnArithmeticOperationMapper = {
       '+': (...args) => args.reduce(function(val1, val2) { return val1 + val2 }),
@@ -73,6 +77,12 @@ export default class App extends React.Component {
     this.matchReg = /([a-zA-Z0-9]+)|([0-9]+)|([*+\-/=])/gm;
     this.boolFirstInstruction = true;
     console.disableYellowBox = true;
+    this.strExamplesText = [
+      'coke = 100',
+      'sprite = 200',
+      'coke + sprite = (press \'run Calculate\')'
+    ];
+    this.fnOpenDrawer();
 
   };
 
@@ -190,19 +200,21 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    const fnInitializedFinished = () => {
-      this.boolFirstInstruction = false;
-      this._textarea && this._textarea.focus();
+    const fnInitializedFinished = (boolFocus = true) => {
+      this.fnCloseDrawer();
+      boolFocus && this._textarea && this._textarea.focus();
     };
-    setTimeout(() => this.setState({ ruleVisible: false }, fnInitializedFinished()), 5000);
+    setTimeout(() => this.fnOpenDrawer(), 200);
+    setTimeout(() => fnInitializedFinished(false), 5000);
+    setTimeout(() => this.setState({ boolExampleVisible: false }, fnInitializedFinished()), 8000);
   };
 
   fnCloseDrawer() {
-    this._drawer._root.close();
+    this._drawer && this._drawer._root.close();
   };
   fnOpenDrawer() {
     Keyboard.dismiss();
-    this._drawer._root.open();
+    this._drawer && this._drawer._root.open();
   };
 
   render() {
@@ -240,20 +252,98 @@ export default class App extends React.Component {
                 </Header>
                 <Content>
                   {/* <Body> */}
-                  <Text
-                    style={styles.exampleHeaderText}
+                  <Card
+                    // style={{ flex: 0 }}
                   >
-                    Examples
-                  </Text>
-                  <Text
-                    style={styles.exampleBodyText}
-                  >
-                    coke=100,
-                    {'\n'}
-                    sprite=200,
-                    {'\n'}
-                    coke + sprite = (press 'run Calculate')
-                  </Text>
+                    <CardItem>
+                      <TouchableOpacity
+                        onPress={() => this.setState({ boolExampleVisible: !this.state.boolExampleVisible })}
+                      >
+                        {this.state.boolExampleVisible ? (
+                          <View
+                            style={styles.exampleHeaderView}
+                          >
+                          <Text
+                            style={styles.exampleHeaderText}
+                          >
+                            ▽ Examples
+                          </Text>
+                          <Text
+                            style={[styles.ruleBodyText, { color: 'gray' }]}
+                          >
+                            (click to hide)
+                          </Text>
+                        </View>) : (
+                          <View
+                            style={styles.exampleHeaderView}
+                          >
+                            <Text
+                              style={styles.exampleHeaderText}
+                            >
+                              ▷ Examples
+                            </Text>
+                            <Text
+                              style={[styles.ruleBodyText, { color: 'gray' }]}
+                            >
+                              (click to hide)
+                            </Text>
+                          </View>
+                        )}
+                      </TouchableOpacity>
+                    </CardItem>
+                    <View
+                      style={{ marginHorizontal: 10 }}
+                    >
+                      {this.state.boolExampleVisible && <List
+                        dataArray={this.strExamplesText}
+                        renderRow={rowData => <ListItem
+                          key={rowData}
+                          >
+                            <Text
+                              style={styles.exampleBodyText}
+                            >
+                              {rowData}
+                            </Text>
+                        </ListItem>}>
+                      </List>}
+                    </View>
+                  </Card>
+                  <Card>
+                    <CardItem>
+                      <Text
+                        style={styles.exampleHeaderText}
+                      >
+                        ▽ Expression
+                      </Text>
+                    </CardItem>
+                    <KeyboardAvoidingView
+                      behavior='padding'
+                    >
+                      <TextInput
+                        // ref='_textarea'
+                        ref={_textarea => {
+                          this._textarea = _textarea;
+                          // console.log('ref')
+                          // this.state.boolFabActive && this.fnToggleFab();
+                        }}
+                        style={{
+                          height: 150,
+                          borderWidth: 1,
+                          borderRadius: 3,
+                          borderColor: '#797979',
+                          padding: 10,
+                          fontSize: 13,
+                        }}
+                        multiline={true}
+                        autoCapitalize={'none'}
+                        placeholder='input what you want to calculate'
+                        onChangeText={strInputText => {
+                          this.state.boolFabActive && this.fnToggleFab();
+                          this.setState({ strInputText });
+                        }}
+                      />
+                    </KeyboardAvoidingView>
+                  </Card>
                   <Fab
                     active={this.state.boolFabActive}
                     onPress={() => this.setState({ boolFabActive: !this.state.boolFabActive })}
@@ -288,38 +378,6 @@ export default class App extends React.Component {
                       />
                     </Button>
                   </Fab>
-                  <Text
-                    style={styles.exampleHeaderText}
-                  >
-                    Expression
-                  </Text>
-                    <KeyboardAvoidingView
-                      behavior='padding'
-                    >
-                      <TextInput
-                        // ref='_textarea'
-                        ref={_textarea => {
-                          this._textarea = _textarea;
-                          // console.log('ref')
-                          // this.state.boolFabActive && this.fnToggleFab();
-                        }}
-                        style={{
-                          height: 150,
-                          borderWidth: 1,
-                          borderRadius: 5,
-                          borderColor: 'lightgray',
-                          padding: 10,
-                          fontSize: 13,
-                        }}
-                        multiline={true}
-                        autoCapitalize={'none'}
-                        placeholder='input what you want to calculate'
-                        onChangeText={strInputText => {
-                          this.state.boolFabActive && this.fnToggleFab();
-                          this.setState({ strInputText });
-                        }}
-                      />
-                    </KeyboardAvoidingView>
                   {/* </Body> */}
                 </Content>
                 {/* <Footer>

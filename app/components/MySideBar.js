@@ -15,7 +15,8 @@ import {
   Title,
   Left,
   List,
-  ListItem
+  ListItem,
+  Footer
 } from 'native-base';
 import styles from '../styles';
 
@@ -124,7 +125,7 @@ export default class MySideBar extends React.Component {
                           <Text
                           style={styles.ruleHeaderText}
                         >
-                          Rules
+                          ▼ Rules
                         </Text>
                         <Text
                           style={[styles.ruleBodyText, { color: 'gray' }]}
@@ -139,7 +140,7 @@ export default class MySideBar extends React.Component {
                           <Text
                             style={styles.ruleHeaderText}
                           >
-                            Rules
+                            ▶︎ Rules
                           </Text>
                           <Text
                             style={[styles.ruleBodyText, { color: 'gray' }]}
@@ -188,6 +189,17 @@ export default class MySideBar extends React.Component {
               </List>
             </List>
           </Content>
+          <Footer>
+             <View
+               style={styles.copyWriterView}
+             >
+               <Text
+                 style={styles.copyWriterText}
+               >
+                 By Roy
+               </Text>
+             </View>
+          </Footer>
         </Container>
       </View>
 
