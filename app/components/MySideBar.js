@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  ListView,
   TouchableOpacity,
 } from 'react-native';
 import {
@@ -30,41 +29,35 @@ export default class MySideBar extends React.Component {
         '1. allow arithmetic operations : +, -, *, /',
         '2. calculate order : from left(not allowed : bracket)',
         '3. space not allowed in the variable name.',
-        '4. each expression should be end with \',\'.',
+        '4. each expression should be end with \'enter\' or \',\'.',
         '5. support language is english only.'
       ]
-      // boolListViewVisible: false
     };
-    this.ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
     this.fnRuleToggle = this.fnRuleToggle.bind(this);
   }
 
-  componentWillMount() {
-    this.setState({
-      // arrDataSourceVariableSet: this.ds.cloneWithRows(this.props.objVariableSet),
-      // boolListViewVisible: Object.keys(this.props.objVariableSet).length > 0 ? true : false
-    });
-  }
-  // componentWillUpdate() {
-  //   this.setState({
-  //     arrDataSourceVariableSet: this.ds.cloneWithRows(this.props.objVariableSet),
-  //     boolListViewVisible: Object.keys(this.props.objVariableSet).length > 0 ? true : false
-  //   })
-  // }
   fnRuleToggle() {
     this.setState({ boolRuleVisible: !this.state.boolRuleVisible });
   };
+  componentDidUpdate() {
+    console.log(`
+      componentWillUpdate
+      this.props.boolRuleVisible : ${String(this.props.boolRuleVisible)}
+      this.props.arrDataSourceVariableSet.length : ${this.props.arrDataSourceVariableSet.length}
+    `)
+    // !this.props.boolRuleVisible && this.props.arrDataSourceVariableSet.length > 0 && this.setState({
+    //   boolRuleVisible: false
+    // })
+  }
   render() {
     const { objVariableSet, arrDataSourceVariableSet } = this.props;
     return (
       <View
         style={{
           backgroundColor: '#EBEBEB',
-          borderWidth: 1,
+          borderRightWidth: 1,
+          borderColor: 'gray',
           flex: 1,
-          // marginTop: 26
           paddingTop: 26
         }}
       >
@@ -74,169 +67,85 @@ export default class MySideBar extends React.Component {
               <Title>
                 Instructions
               </Title>
-
             </Body>
           </Header>
           <Content>
-            {/* <Body> */}
-              {/* <Left> */}
-                {/* {Object.keys(objVariableSet).map(value => (<Text
-                  style={styles.variableListText}
-                      key={value}
-                    >
-                      {value}: {objVariableSet[value]}
-                    </Text>)
-                )} */}
-                {/* {this.state.boolRuleVisible ? ( */}
-                  <View>
-                    <List>
-                      <ListItem itemDivier>
-                        <TouchableOpacity
-                          onPress={this.fnRuleToggle}
+            <View>
+              <List>
+                <ListItem itemDivier>
+                  <TouchableOpacity
+                    onPress={this.fnRuleToggle}
+                  >
+                      {this.state.boolRuleVisible ? (
+                        <View
+                          style={styles.eachHeaderContainer}
                         >
-                          {/* <View
-                            style={styles.eachHeaderContainer}
-                          > */}
-                            {this.state.boolRuleVisible ? (
-                              <View
-                                style={styles.eachHeaderContainer}
-                              >
-                                <Text
-                                style={styles.ruleHeaderText}
-                              >
-                                Rules
-                              </Text>
-                              <Text
-                                style={[styles.ruleBodyText, { color: 'gray' }]}
-                              >
-                                (click to hide)
-                              </Text>
-                              </View>
-                            ) : (
-                              <View
-                                style={styles.eachHeaderContainer}
-                              >
-                                <Text
-                                  style={styles.ruleHeaderText}
-                                >
-                                  Rules
-                                </Text>
-                                <Text
-                                  style={[styles.ruleBodyText, { color: 'gray' }]}
-                                >
-                                  (click to show)
-                                </Text>
-                              </View>
-                            )}
-                          {/* </View> */}
-                        </TouchableOpacity>
-                      </ListItem>
-                    </List>
-                    {this.state.boolRuleVisible && <List
-                      dataArray={this.state.arrRuleText}
-                      renderRow={rowData => <ListItem
-                        key={rowData}
+                          <Text
+                          style={styles.ruleHeaderText}
                         >
-                        <Text
-                          style={styles.ruleBodyText}
-                        >
-                          {rowData}
+                          Rules
                         </Text>
-                      </ListItem>}
-                    >
-                    </List>}
-                  </View>
-                {/* ) : (
-                  <View
-                    style={styles.eachHeaderContainer}
-                  >
-                    <Text
-                      style={styles.ruleHeaderText}
-                    >
-                      Rules
-                    </Text>
-                    <Text
-                      style={[styles.ruleBodyText, { color: 'gray' }]}
-                    >
-                      (click to show)
-                    </Text>
-                  </View>
-                )} */}
-                <List>
-                  {/* <ListItem>
-                    <Text
-                      style={styles.ruleBodyText}
-                    >
-                      1. allow arithmetic operations : +, -, *, /
-                    </Text>
-                  </ListItem>
-                  <ListItem>
-                    <Text
-                      style={styles.ruleBodyText}
-                    >
-                      2. calculate order : from left(not allowed : bracket)
-                    </Text>
-                  </ListItem>
-                  <ListItem>
-                    <Text
-                      style={styles.ruleBodyText}
-                    >
-                      3. space not allowed in the variable name.
-                    </Text>
-                  </ListItem>
-                  <ListItem>
-                    <Text
-                      style={styles.ruleBodyText}
-                    >
-                      4. each expression should be end with ','.
-                    </Text>
-                  </ListItem>
-                  <ListItem>
-                    <Text
-                      style={styles.ruleBodyText}
-                    >
-                      5. support language is english only.
-                    </Text>
-                  </ListItem> */}
-                  <ListItem itemDivier>
-                    <Text
-                      style={styles.ruleHeaderText}
-                    >
-                      Variables : {arrDataSourceVariableSet.length}
-                    </Text>
-                  </ListItem>
-                  <List
-                    dataArray={arrDataSourceVariableSet}
-                    renderRow={rowData => <ListItem
-                      key={rowData.name}
-                    >
-                      <Text>
-                        {rowData.name} : {rowData.value}
-                      </Text>
-                    </ListItem>}
-                  >
-                  </List>
-                  {/* <ListView
-                    enableEmptySections={true}
-                    removeClippedSubviews={false}
-                    dataSource={arrDataSourceVariableSet}
-                    renderRow={rowData => {
-                      console.log('rowData : ', rowData)
-                      return (
-                        <ListItem
-                          key={rowData.name}
+                        <Text
+                          style={[styles.ruleBodyText, { color: 'gray' }]}
                         >
-                          <Text>
-                            {rowData.name} : {rowData.value}
+                          (click to hide)
+                        </Text>
+                        </View>
+                      ) : (
+                        <View
+                          style={styles.eachHeaderContainer}
+                        >
+                          <Text
+                            style={styles.ruleHeaderText}
+                          >
+                            Rules
                           </Text>
-                        </ListItem>
-                      )
-                    }
-                    }
-                  /> */}
-                </List>
-              {/* </Left> */}
-            {/* </Body> */}
+                          <Text
+                            style={[styles.ruleBodyText, { color: 'gray' }]}
+                          >
+                            (click to show)
+                          </Text>
+                        </View>
+                      )}
+                  </TouchableOpacity>
+                </ListItem>
+              </List>
+              {this.state.boolRuleVisible && <List
+                dataArray={this.state.arrRuleText}
+                renderRow={rowData => <ListItem
+                  key={rowData}
+                  >
+                  <Text
+                    style={styles.ruleBodyText}
+                  >
+                    {rowData}
+                  </Text>
+                </ListItem>}
+              >
+              </List>}
+            </View>
+            <List>
+              <ListItem itemDivier>
+                <Text
+                  style={styles.ruleHeaderText}
+                >
+                  Variables : {arrDataSourceVariableSet.length}
+                </Text>
+              </ListItem>
+              <List
+                dataArray={arrDataSourceVariableSet}
+                renderRow={rowData => <ListItem
+                  key={rowData.name}
+                >
+                  <Text
+                    style={styles.ruleBodyText}
+                  >
+                    {rowData.name} : {rowData.value}
+                  </Text>
+                </ListItem>}
+              >
+              </List>
+            </List>
           </Content>
         </Container>
       </View>
@@ -244,7 +153,3 @@ export default class MySideBar extends React.Component {
     )
   }
 }
-
-// MySideBar.defaultProps = {
-//   objVariableSet: {}
-// }

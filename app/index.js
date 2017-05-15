@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableOpacity,
-  ListView
 } from 'react-native';
 import {
   Container,
@@ -33,7 +32,6 @@ import MySideBar from './components/MySideBar';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       strNewInputedText: '',
       strInputText: '',
@@ -43,7 +41,6 @@ export default class App extends React.Component {
       numTempPrevResult: 0,
       objVariableSet: {},
       arrObjVariableSet: [],
-      arrDataSourceVariableSet: this.ds.cloneWithRows([]),
       boolCalculateStatus: false,
       ruleVisible: true,
       exampleVisible: false,
@@ -93,6 +90,7 @@ export default class App extends React.Component {
     this.setState(prevState => {
       prevState.arrCalculatedText = [];
       prevState.objVariableSet = {};
+      prevState.arrObjVariableSet = [];
       prevState.numTotalResult = 0;
       prevState.numTempPrevResult = 0;
       prevState.boolCalculateStatus = false;
@@ -118,7 +116,6 @@ export default class App extends React.Component {
           }),
           prevState.numTempPrevResult = 0,
           prevState.arrCalculatedText.push(prevValueFromArrSplittedText, ' = ', prevState.objVariableSet[prevValueFromArrSplittedText], '\n')
-          // prevState.arrDataSourceVariableSet = this.ds.cloneWithRows(prevState.arrObjVariableSet)
         );
 
         // Below is for caculation.
@@ -210,7 +207,6 @@ export default class App extends React.Component {
             <Drawer
               ref={_drawer => this._drawer = _drawer}
               // content={<MySideBar navigator={this.navigator} />}
-              // content={<MySideBar objVariableSet={this.state.objVariableSet} arrDataSourceVariableSet={this.state.arrDataSourceVariableSet} />}
               content={<MySideBar objVariableSet={this.state.objVariableSet} arrDataSourceVariableSet={this.state.arrObjVariableSet} />}
               // onClose={() => this.fnCloseDrawer()}
               // onClose={() => alert('close')}
