@@ -2,15 +2,22 @@ import React from 'react';
 import {
   View,
   Text,
-  Button,
+  // Button,
   TextInput,
   Alert,
   KeyboardAvoidingView,
   Keyboard,
   TouchableOpacity,
   ScrollView,
-} from 'react-native'
-import styles from './styles'
+} from 'react-native';
+import {
+  Button,
+  Fab,
+  // Icon
+} from 'native-base';
+import Icon from 'react-native-vector-icons/FontAwesome';
+// import { Icon } from 'native-base/Fonts';
+import styles from './styles';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -121,7 +128,29 @@ export default class App extends React.Component {
     });
     setTimeout(() => this.refs['_textarea'].setNativeProps({ text: this.state.strInputText }), 0);
     Keyboard.dismiss();
-  }
+  };
+  fnClear() {
+    Alert.alert(
+      'Warning',
+      'All data would be deleted. This can\'t be restored.',
+      [
+        { text: 'Cancel', onPress: () => this.fnFocus() },
+        { text: 'OK', onPress: () => {
+          this.refs['_textarea'].setNativeProps({ text: '' });
+          this.setState({
+            strNewInputedText: '',
+            strInputText: '',
+            arrSplittedText: [],
+            arrCalculatedText: [],
+            numTotalResult: 0,
+            numTempPrevResult: 0,
+            objVariableSet: {},
+            boolCalculateStatus: false
+          });
+        }}
+      ]
+    )
+  };
 
   componentDidMount() {
     const fnInitializedFinished = () => {
@@ -343,7 +372,6 @@ export default class App extends React.Component {
               borderColor: 'lightgray',
               padding: 10,
               fontSize: 13,
-              maxLength: 10,
             }}
             multiline={true}
             autoCapitalize={'none'}
@@ -352,10 +380,32 @@ export default class App extends React.Component {
           />
         </KeyboardAvoidingView>
         <Button
+          onPress={this.fnSubmit}
+        >
+          <Icon name='refresh' />
+          <Text>
+            Run Calculate
+          </Text>
+        </Button>
+        {/* <Button
+          onPress={this.fnClear}
+        > */}
+          <Icon name='clear' />
+          {/* <Text>
+            Clear
+          </Text>
+        </Button> */}
+        {/* <Button>
+          <Icon name='keyboard-close' />
+          <Text>
+            Hide Keyboard
+          </Text>
+        </Button> */}
+        {/* <Button
           title='Run Calculate'
           onPress={this.fnSubmit}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title='Clear'
           onPress={() => {
             Alert.alert(
@@ -378,9 +428,8 @@ export default class App extends React.Component {
                 }}
               ]
             )
-
           }}
-        />
+        /> */}
         {this.boolFirstInstruction && <Text
           style={styles.firstInstruction}
           >
