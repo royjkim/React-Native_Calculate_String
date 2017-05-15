@@ -72,6 +72,47 @@ export default class MySideBar extends React.Component {
           <Content>
             <View>
               <List>
+                <ListItem>
+                  <View
+                    style={styles.instructionParentViewContainer}
+                  >
+                    <View
+                      style={styles.instructionViewContainer}
+                    >
+                      <Icon
+                        name='ios-arrow-dropleft-circle-outline'
+                        style={{ color: '#008D14' }}
+                      />
+                      <Text>
+                        Buttons
+                      </Text>
+                    </View>
+                    <View
+                      style={styles.instructionViewContainer}
+                    >
+                      <Icon
+                        name='md-checkmark'
+                        style={{ color: '#385EFB' }}
+                      />
+                      <Text>
+                        Caculate
+                      </Text>
+                    </View>
+                    <View
+                      style={styles.instructionViewContainer}
+                    >
+                      <Icon
+                        name='ios-close-outline'
+                        style={{ color: '#FF2A1A' }}
+                      />
+                      <Text>
+                        Clear
+                      </Text>
+                    </View>
+                  </View>
+                </ListItem>
+              </List>
+              <List>
                 <ListItem itemDivier>
                   <TouchableOpacity
                     onPress={this.fnRuleToggle}

@@ -64,6 +64,14 @@ const styles = StyleSheet.create({
   },
   variableListText: {
     fontSize: 18
+  },
+  instructionParentViewContainer: {
+    flexDirection: 'row'
+  },
+  instructionViewContainer: {
+    flex: 1,
+    // flexDirection: 'row',
+    alignItems: 'center',
   }
 });
 

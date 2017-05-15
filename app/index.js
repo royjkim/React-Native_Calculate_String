@@ -23,6 +23,7 @@ import {
   Icon,
   Drawer,
   Fab,
+  Toast,
 } from 'native-base';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import { Icon } from 'native-base/Fonts';
@@ -87,6 +88,7 @@ export default class App extends React.Component {
     this.state.strInputText === '' ? alert('input text please') : this.fnCalculate();
   };
   fnCalculate() {
+    Keyboard.dismiss();
     this.setState(prevState => {
       prevState.arrCalculatedText = [];
       prevState.objVariableSet = {};
@@ -154,7 +156,13 @@ export default class App extends React.Component {
       prevState.arrCalculatedText.map(value => prevState.strInputText += value);
     });
     setTimeout(() => this._textarea.setNativeProps({ text: this.state.strInputText }), 0);
-    Keyboard.dismiss();
+    Toast.show({
+      supportedOrientations: ['potrait','landscape'],
+      text: 'Calculate Completed!',
+      position: 'bottom',
+      duration: 2500,
+      buttonText: 'OK'
+    })
   };
   fnClear() {
     this.fnToggleFab();
@@ -175,6 +183,7 @@ export default class App extends React.Component {
             objVariableSet: {},
             boolCalculateStatus: false
           });
+          this.fnFocus();
         }}
       ]
     )
@@ -249,11 +258,9 @@ export default class App extends React.Component {
                     active={this.state.boolFabActive}
                     onPress={() => this.setState({ boolFabActive: !this.state.boolFabActive })}
                     style={{ backgroundColor: '#008D14' }}
-                    // containerStyle={{ marginTop: 0 }}
                     direction='left'
                     position='topRight'
                   >
-                    {/* <Icon name='ios-radio-button-on' /> */}
                     <Icon name='ios-arrow-dropleft-circle-outline' />
                     <Button
                       style={{ backgroundColor: '#045591' }}
@@ -270,25 +277,14 @@ export default class App extends React.Component {
                     >
                       <Icon
                         name='ios-close-outline'
-                        // style={{ color: }}
                       />
                     </Button>
-                    {/* <Button
-                      style={{ backgroundColor: '#385EFB' }}
-                      onPress={this.fnSubmit}
-                    >
-                      <Icon
-                        name='ios-happy-outline'
-                        style={styles.fabTwoDepthBtnStyle}
-                      />
-                    </Button> */}
                     <Button
                       style={{ backgroundColor: '#385EFB' }}
                       onPress={this.fnSubmit}
                     >
                       <Icon
                         name='md-checkmark'
-                        // style={styles.fabTwoDepthBtnStyle}
                       />
                     </Button>
                   </Fab>
