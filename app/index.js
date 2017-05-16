@@ -295,28 +295,30 @@ export default class App extends React.Component {
                   ▽ Expression
                 </Text>
               </CardItem>
-              <KeyboardAvoidingView
-                behavior='padding'
-              >
-                <TextInput
-                  ref={_textarea => this._textarea = _textarea}
-                  style={{
-                    height: 150,
-                    borderWidth: 1,
-                    borderRadius: 3,
-                    borderColor: '#797979',
-                    padding: 10,
-                    fontSize: 13,
-                  }}
-                  multiline={true}
-                  autoCapitalize={'none'}
-                  placeholder='input what you want to calculate'
-                  onChangeText={strInputText => {
-                    this.state.boolFabActive && this.fnToggleFab();
-                    this.setState({ strInputText });
-                  }}
-                />
-              </KeyboardAvoidingView>
+              <Content>
+                <KeyboardAvoidingView
+                  behavior='padding'
+                >
+                  <TextInput
+                    ref={_textarea => this._textarea = _textarea}
+                    style={{
+                      height: 150,
+                      borderWidth: 1,
+                      borderRadius: 3,
+                      borderColor: '#797979',
+                      padding: 10,
+                      fontSize: 13,
+                    }}
+                    multiline={true}
+                    autoCapitalize={'none'}
+                    placeholder='input what you want to calculate'
+                    onChangeText={strInputText => {
+                      this.state.boolFabActive && this.fnToggleFab();
+                      this.setState({ strInputText });
+                    }}
+                  />
+                </KeyboardAvoidingView>
+              </Content>
             </Card>
             <Fab
               active={this.state.boolFabActive}
