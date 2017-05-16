@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  // Button,
   TextInput,
   Alert,
   KeyboardAvoidingView,
@@ -28,8 +27,6 @@ import {
   List,
   ListItem,
 } from 'native-base';
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// import { Icon } from 'native-base/Fonts';
 import styles from './styles';
 import MySideBar from './components/MySideBar';
 
@@ -57,14 +54,6 @@ export default class App extends React.Component {
       '-': (...args) => args.reduce(function(val1, val2) { return val1 - val2 }),
       '*': (...args) => args.reduce(function(val1, val2) { return val1 * val2 }),
       '/': (...args) => args.reduce(function(val1, val2) { return val1 / val2 })
-      // '+': (val1, val2) => val1 + val2,
-      // '-': (val1, val2) => val1 - val2,
-      // '*': (val1, val2) => val1 * val2,
-      // '/': (val1, val2) => val1 / val2
-      // '더하기': (val1, val2) => val1 + val2,
-      // '빼기': (val1, val2) => val1 - val2,
-      // '곱하기': (val1, val2) => val1 * val2,
-      // '나누기': (val1, val2) => val1 / val2
     };
     this.fnSubmit = this.fnSubmit.bind(this);
     this.fnCalculate = this.fnCalculate.bind(this);
@@ -87,7 +76,6 @@ export default class App extends React.Component {
   };
 
   fnFocus() {
-    // this.refs['_textarea'].focus();
     this._textarea.focus();
   };
   fnToggleFab() {
@@ -95,7 +83,13 @@ export default class App extends React.Component {
   };
   fnSubmit() {
     this.fnToggleFab();
-    this.state.strInputText === '' ? alert('input text please') : this.fnCalculate();
+    this.state.strInputText === '' ? Alert.alert(
+      'Input text please',
+      null,
+      [
+        { text: 'OK', onPress: () => this.fnFocus() }
+      ]
+    ) : this.fnCalculate();
   };
   fnCalculate() {
     Keyboard.dismiss();
@@ -150,13 +144,11 @@ export default class App extends React.Component {
               prevState.arrCalculatedText.pop();
               const tempResult = this.fnArithmeticOperationMapper.hasOwnProperty(strArithmetic) ? this.fnArithmeticOperationMapper[strArithmetic](prevState.boolCalculateStatus ? prevState.numTempPrevResult : numLeftValue, numRightValue) : 0;
               prevState.numCalResult = tempResult;
-              // prevState.numCalResult = this.fnArithmeticOperationMapper[strArithmetic](prevState.boolCalculateStatus ? prevState.numTempPrevResult : numLeftValue, numRightValue);
               prevState.numTempPrevResult = prevState.numCalResult;
               prevState.boolCalculateStatus = true;
             } else if(prevState.arrSplittedText[index+2] === '=') {
               const tempResult = this.fnArithmeticOperationMapper.hasOwnProperty(strArithmetic) ? this.fnArithmeticOperationMapper[strArithmetic](prevState.boolCalculateStatus ? prevState.numTempPrevResult : numLeftValue, numRightValue) : 0;
               prevState.arrCalculatedText.push(' = ', tempResult, '\n');
-              // prevState.arrCalculatedText.push(' = ', this.fnArithmeticOperationMapper[strArithmetic](prevState.boolCalculateStatus ? prevState.numTempPrevResult : numLeftValue, numRightValue), '\n');
               prevState.numTempPrevResult = 0;
               prevState.boolCalculateStatus = false;
             };
@@ -218,187 +210,151 @@ export default class App extends React.Component {
   };
 
   render() {
-    // const fnCloseDrawer = () => {
-    //   this._drawer._root.close();
-    // };
-    // const fnOpenDrawer = () => {
-    //   this._drawer._root.open();
-    // };
     return(
-            <Drawer
-              ref={_drawer => this._drawer = _drawer}
-              // content={<MySideBar navigator={this.navigator} />}
-              content={<MySideBar objVariableSet={this.state.objVariableSet} arrDataSourceVariableSet={this.state.arrObjVariableSet} />}
-              // onClose={() => this.fnCloseDrawer()}
-              // onClose={() => alert('close')}
-              // onOpen={() => alert('open')}
-              onClose={this.fnCloseDrawer}
-            >
-              <Container>
-                <Header>
-                  <Left>
-                    <Button light
-                      onPress={this.fnOpenDrawer}
-                    >
-                      <Icon name='menu' style={{ color: 'black' }} />
-                    </Button>
-                  </Left>
-                  <Body>
-                    <Title>
-                      Calculator
-                    </Title>
-                  </Body>
-                  <Right />
-                </Header>
-                <Content>
-                  {/* <Body> */}
-                  <Card
-                    // style={{ flex: 0 }}
-                  >
-                    <CardItem>
-                      <TouchableOpacity
-                        onPress={() => this.setState({ boolExampleVisible: !this.state.boolExampleVisible })}
-                      >
-                        {this.state.boolExampleVisible ? (
-                          <View
-                            style={styles.exampleHeaderView}
-                          >
-                          <Text
-                            style={styles.exampleHeaderText}
-                          >
-                            ▽ Examples
-                          </Text>
-                          <Text
-                            style={[styles.ruleBodyText, { color: 'gray' }]}
-                          >
-                            (click to hide)
-                          </Text>
-                        </View>) : (
-                          <View
-                            style={styles.exampleHeaderView}
-                          >
-                            <Text
-                              style={styles.exampleHeaderText}
-                            >
-                              ▷ Examples
-                            </Text>
-                            <Text
-                              style={[styles.ruleBodyText, { color: 'gray' }]}
-                            >
-                              (click to hide)
-                            </Text>
-                          </View>
-                        )}
-                      </TouchableOpacity>
-                    </CardItem>
+      <Drawer
+        ref={_drawer => this._drawer = _drawer}
+        content={<MySideBar objVariableSet={this.state.objVariableSet} arrDataSourceVariableSet={this.state.arrObjVariableSet} />}
+        onClose={this.fnCloseDrawer}
+      >
+        <Container>
+          <Header>
+            <Left>
+              <Button light
+                onPress={this.fnOpenDrawer}
+              >
+                <Icon name='menu' style={{ color: 'black' }} />
+              </Button>
+            </Left>
+            <Body>
+              <Title>
+                Calculator
+              </Title>
+            </Body>
+            <Right />
+          </Header>
+          <Content>
+            <Card>
+              <CardItem bordered>
+                <TouchableOpacity
+                  onPress={() => this.setState({ boolExampleVisible: !this.state.boolExampleVisible })}
+                >
+                  {this.state.boolExampleVisible ? (
                     <View
-                      style={{ marginHorizontal: 10 }}
+                      style={styles.exampleHeaderView}
                     >
-                      {this.state.boolExampleVisible && <List
-                        dataArray={this.strExamplesText}
-                        renderRow={rowData => <ListItem
-                          key={rowData}
-                          >
-                            <Text
-                              style={styles.exampleBodyText}
-                            >
-                              {rowData}
-                            </Text>
-                        </ListItem>}>
-                      </List>}
-                    </View>
-                  </Card>
-                  <Card>
-                    <CardItem>
+                    <Text
+                      style={styles.exampleHeaderText}
+                    >
+                      ▽ Examples
+                    </Text>
+                    <Text
+                      style={[styles.ruleBodyText, { color: 'gray' }]}
+                    >
+                      (click to hide)
+                    </Text>
+                  </View>) : (
+                    <View
+                      style={styles.exampleHeaderView}
+                    >
                       <Text
                         style={styles.exampleHeaderText}
                       >
-                        ▽ Expression
+                        ▷ Examples
                       </Text>
-                    </CardItem>
-                    <KeyboardAvoidingView
-                      behavior='padding'
-                    >
-                      <TextInput
-                        // ref='_textarea'
-                        ref={_textarea => {
-                          this._textarea = _textarea;
-                          // console.log('ref')
-                          // this.state.boolFabActive && this.fnToggleFab();
-                        }}
-                        style={{
-                          height: 150,
-                          borderWidth: 1,
-                          borderRadius: 3,
-                          borderColor: '#797979',
-                          padding: 10,
-                          fontSize: 13,
-                        }}
-                        multiline={true}
-                        autoCapitalize={'none'}
-                        placeholder='input what you want to calculate'
-                        onChangeText={strInputText => {
-                          this.state.boolFabActive && this.fnToggleFab();
-                          this.setState({ strInputText });
-                        }}
-                      />
-                    </KeyboardAvoidingView>
-                  </Card>
-                  <Fab
-                    active={this.state.boolFabActive}
-                    onPress={() => this.setState({ boolFabActive: !this.state.boolFabActive })}
-                    style={{ backgroundColor: '#008D14' }}
-                    direction='left'
-                    position='topRight'
-                  >
-                    <Icon name='ios-arrow-dropleft-circle-outline' />
-                    <Button
-                      style={{ backgroundColor: '#045591' }}
-                      onPress={() => {
-                        this.fnToggleFab();
-                        this.fnOpenDrawer();
-                      }}
-                    >
-                      <Icon name='md-list' />
-                    </Button>
-                    <Button
-                      style={{ backgroundColor: '#FF2A1A' }}
-                      onPress={this.fnClear}
-                    >
-                      <Icon
-                        name='ios-close-outline'
-                      />
-                    </Button>
-                    <Button
-                      style={{ backgroundColor: '#385EFB' }}
-                      onPress={this.fnSubmit}
-                    >
-                      <Icon
-                        name='md-checkmark'
-                      />
-                    </Button>
-                  </Fab>
-                  {/* </Body> */}
-                </Content>
-                {/* <Footer>
-                  <View
-                    style={{ justifyContent: 'center' }}
-                  >
-                    <Button bordered danger
-                      // style={{ backgroundColor: 'white', color: 'red' }}
-                    >
-                      <Icon
-                        name='trash'
-                        style={{ color: '#FF2A1A' }}
-                      />
-                      <Text>
-                        Clear
+                      <Text
+                        style={[styles.ruleBodyText, { color: 'gray' }]}
+                      >
+                        (click to hide)
                       </Text>
-                    </Button>
-                  </View>
-                </Footer> */}
-              </Container>
-            </Drawer>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </CardItem>
+              <View
+                style={{ marginHorizontal: 10 }}
+              >
+                {this.state.boolExampleVisible && <List
+                  dataArray={this.strExamplesText}
+                  renderRow={rowData => <ListItem
+                    key={rowData}
+                    >
+                      <Text
+                        style={styles.exampleBodyText}
+                      >
+                        {rowData}
+                      </Text>
+                  </ListItem>}>
+                </List>}
+              </View>
+            </Card>
+            <Card>
+              <CardItem bordered>
+                <Text
+                  style={styles.exampleHeaderText}
+                >
+                  ▽ Expression
+                </Text>
+              </CardItem>
+              <KeyboardAvoidingView
+                behavior='padding'
+              >
+                <TextInput
+                  ref={_textarea => this._textarea = _textarea}
+                  style={{
+                    height: 150,
+                    borderWidth: 1,
+                    borderRadius: 3,
+                    borderColor: '#797979',
+                    padding: 10,
+                    fontSize: 13,
+                  }}
+                  multiline={true}
+                  autoCapitalize={'none'}
+                  placeholder='input what you want to calculate'
+                  onChangeText={strInputText => {
+                    this.state.boolFabActive && this.fnToggleFab();
+                    this.setState({ strInputText });
+                  }}
+                />
+              </KeyboardAvoidingView>
+            </Card>
+            <Fab
+              active={this.state.boolFabActive}
+              onPress={() => this.setState({ boolFabActive: !this.state.boolFabActive })}
+              style={{ backgroundColor: '#008D14' }}
+              direction='left'
+              position='topRight'
+            >
+              <Icon name='ios-arrow-dropleft-circle-outline' />
+              <Button
+                style={{ backgroundColor: '#045591' }}
+                onPress={() => {
+                  this.fnToggleFab();
+                  this.fnOpenDrawer();
+                }}
+              >
+                <Icon name='md-list' />
+              </Button>
+              <Button
+                style={{ backgroundColor: '#FF2A1A' }}
+                onPress={this.fnClear}
+              >
+                <Icon
+                  name='ios-close-outline'
+                />
+              </Button>
+              <Button
+                style={{ backgroundColor: '#385EFB' }}
+                onPress={this.fnSubmit}
+              >
+                <Icon
+                  name='md-checkmark'
+                />
+              </Button>
+            </Fab>
+          </Content>
+        </Container>
+      </Drawer>
     )
   }
 }

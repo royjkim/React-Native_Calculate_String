@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 import {
   Container,
-  // Text,
   Icon,
   Button,
   Header,
@@ -40,16 +39,6 @@ export default class MySideBar extends React.Component {
   fnRuleToggle() {
     this.setState({ boolRuleVisible: !this.state.boolRuleVisible });
   };
-  componentDidUpdate() {
-    console.log(`
-      componentWillUpdate
-      this.props.boolRuleVisible : ${String(this.props.boolRuleVisible)}
-      this.props.arrDataSourceVariableSet.length : ${this.props.arrDataSourceVariableSet.length}
-    `)
-    // !this.props.boolRuleVisible && this.props.arrDataSourceVariableSet.length > 0 && this.setState({
-    //   boolRuleVisible: false
-    // })
-  }
   render() {
     const { objVariableSet, arrDataSourceVariableSet } = this.props;
     return (
@@ -171,7 +160,7 @@ export default class MySideBar extends React.Component {
                 <Text
                   style={styles.ruleHeaderText}
                 >
-                  Variables : {arrDataSourceVariableSet.length}
+                  ▼ Variables : {arrDataSourceVariableSet.length}
                 </Text>
               </ListItem>
               <List
