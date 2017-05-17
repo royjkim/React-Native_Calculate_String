@@ -159,7 +159,7 @@ export default class App extends React.Component {
     });
     setTimeout(() => this._textarea.setNativeProps({ text: this.state.strInputText }), 0);
     Toast.show({
-      supportedOrientations: ['potrait','landscape'],
+      supportedOrientations: ['portrait'],
       text: 'Calculate Completed!',
       position: 'bottom',
       duration: 2500,
